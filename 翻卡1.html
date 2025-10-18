@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拼音对对碰 - 完整版</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 20px;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            width: 100%;
+            max-width: 1100px;
+            margin: 20px 0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            color: #2575fc;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .theme-selector {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .theme-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .theme-btn {
+            background-color: #6a89cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .theme-btn:hover {
+            background-color: #4a69bd;
+            transform: translateY(-2px);
+        }
+        
+        .theme-btn.active {
+            background-color: #1e3799;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .control-panel {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        label {
+            width: 80px;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        select, input[type="range"] {
+            flex: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .range-value {
+            width: 40px;
+            text-align: right;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .warning {
+            color: #e74c3c;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px;
+            background-color: #ffeaea;
+            border-radius: 5px;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-board {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .card {
+            height: 120px;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 28px;
+            color: white;
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .card.flipped {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            color: #2c3e50;
+        }
+        
+        .card.matched {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            cursor: default;
+            transform: rotateY(180deg);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+        }
+        
+        .completion-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 100;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .completion-message h2 {
+            color: #27ae60;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .completion-message p {
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+        
+        .level-indicator {
+            font-size: 1.3rem;
+            color: #e74c3c;
+            text-align: center;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        footer {
+            margin-top: 30px;
+            color: white;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .card-content {
+            transform: rotateY(180deg);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-scroll {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .instructions {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .save-instructions {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .save-instructions h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .save-instructions code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .feature {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        
+        .feature i {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .new-theme-notice {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-puzzle-piece"></i> 拼音对对碰 - 完整版</h1>
+            
+            <div class="new-theme-notice">
+                <p><i class="fas fa-star"></i> 新增主题：<strong>运动</strong> 和 <strong>地点</strong>！</p>
+            </div>
+            
+            <p class="description">
+                一款有趣的中文学习游戏，通过匹配拼音和汉字来学习中文词汇。适合所有年龄段的中文学习者！
+            </p>
+            
+            <div class="feature-list">
+                <div class="feature">
+                    <i class="fas fa-globe"></i>
+                    <h3>完全在线</h3>
+                    <p>无需下载，直接在浏览器中运行</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>教育性强</h3>
+                    <p>帮助学习拼音和汉字对应关系</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-volume-up"></i>
+                    <h3>语音功能</h3>
+                    <p>点击卡片听取正确发音</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-palette"></i>
+                    <h3>多主题</h3>
+                    <p>19个不同主题，丰富词汇量</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="theme-selector">
+            <h3>选择学习主题</h3>
+            <div class="theme-scroll">
+                <div class="theme-buttons">
+                    <button class="theme-btn active" data-theme="family">家人</button>
+                    <button class="theme-btn" data-theme="fruit">水果</button>
+                    <button class="theme-btn" data-theme="clothing">衣服</button>
+                    <button class="theme-btn" data-theme="weather">天气</button>
+                    <button class="theme-btn" data-theme="hobby">爱好</button>
+                    <button class="theme-btn" data-theme="color">颜色</button>
+                    <button class="theme-btn" data-theme="transport">交通工具</button>
+                    <button class="theme-btn" data-theme="study">学习用品</button>
+                    <button class="theme-btn" data-theme="numbers">数字</button>
+                    <button class="theme-btn" data-theme="zodiac">十二生肖</button>
+                    <button class="theme-btn" data-theme="animals">动物</button>
+                    <button class="theme-btn" data-theme="food">中华美食</button>
+                    <button class="theme-btn" data-theme="occupations">职业</button>
+                    <button class="theme-btn" data-theme="time">时间</button>
+                    <button class="theme-btn" data-theme="countries">国家</button>
+                    <button class="theme-btn" data-theme="languages">语言</button>
+                    <button class="theme-btn" data-theme="subjects">科目</button>
+                    <button class="theme-btn" data-theme="sports">运动</button>
+                    <button class="theme-btn" data-theme="places">地点</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="level-indicator" id="level-indicator">当前主题：家人</div>
+        
+        <div class="control-panel">
+            <div class="control-group">
+                <label for="voice-select">语音选择:</label>
+                <select id="voice-select"></select>
+            </div>
+            <div class="control-group">
+                <label for="rate">语速:</label>
+                <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+                <span class="range-value" id="rate-value">1.0</span>
+            </div>
+            <div class="control-group">
+                <label for="pitch">音高:</label>
+                <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1">
+                <span class="range-value" id="pitch-value">1.0</span>
+            </div>
+            <div id="warning" class="warning"></div>
+            <div class="buttons">
+                <button id="test-voice-btn"><i class="fas fa-volume-up"></i> 测试语音</button>
+                <button id="start-game-btn"><i class="fas fa-play"></i> 开始游戏</button>
+            </div>
+        </div>
+        
+        <div class="game-info">
+            <div>已匹配: <span id="matched-count">0</span>/<span id="total-pairs">8</span></div>
+            <div>用时: <span id="timer">0</span> 秒</div>
+        </div>
+        
+        <main>
+            <div class="game-board" id="game-board"></div>
+        </main>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> 游戏说明</h3>
+            <ol>
+                <li>选择一个主题，然后点击"开始游戏"按钮</li>
+                <li>点击卡片翻开它们，寻找拼音和汉字的匹配对</li>
+                <li>匹配成功的卡片会保持翻开状态</li>
+                <li>完成所有配对后，游戏会显示您的用时</li>
+                <li>点击"再玩一次"可以重新开始当前主题，或选择其他主题</li>
+            </ol>
+        </div>
+        
+        <div class="save-instructions">
+            <h3><i class="fas fa-download"></i> 保存离线版本</h3>
+            <p>1. 按 <code>Ctrl+S</code> (Windows) 或 <code>Cmd+S</code> (Mac) 保存此页面</p>
+            <p>2. 将文件保存为 <code>pinyin_game.html</code></p>
+            <p>3. 在任何电脑上双击保存的文件即可运行游戏</p>
+            <p>4. 游戏完全离线运行，无需互联网连接</p>
+        </div>
+        
+        <div class="share-buttons">
+            <button class="share-btn" onclick="shareGame()">
+                <i class="fas fa-share-alt"></i> 分享游戏
+            </button>
+            <button class="share-btn" onclick="saveGame()">
+                <i class="fas fa-download"></i> 保存离线版
+            </button>
+        </div>
+    </div>
+    
+    <div class="completion-message" id="completion-message">
+        <h2><i class="fas fa-trophy"></i> 恭喜你！</h2>
+        <p>你已完成所有配对！</p>
+        <p>用时: <span id="time-used">0</span> 秒</p>
+        <div class="buttons">
+            <button id="next-level-btn"><i class="fas fa-forward"></i> 下一关</button>
+            <button id="play-again-btn"><i class="fas fa-redo"></i> 再玩一次</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>拼音对对碰游戏 - 设计用于中文学习 | 完全免费使用</p>
+    </footer>
+
+    <script>
+        // 游戏数据 - 多主题
+        const themes = {
+            family: [
+                { pinyin: 'bà ba', character: '爸爸' },
+                { pinyin: 'mā ma', character: '妈妈' },
+                { pinyin: 'dì di', character: '弟弟' },
+                { pinyin: 'mèi mei', character: '妹妹' },
+                { pinyin: 'jiě jie', character: '姐姐' },
+                { pinyin: 'gē ge', character: '哥哥' },
+                { pinyin: 'xiè xie', character: '谢谢' },
+                { pinyin: 'yé ye', character: '爷爷' }
+            ],
+            fruit: [
+                { pinyin: 'píng guǒ', character: '苹果' },
+                { pinyin: 'xiāng jiāo', character: '香蕉' },
+                { pinyin: 'cǎo méi', character: '草莓' },
+                { pinyin: 'xī guā', character: '西瓜' },
+                { pinyin: 'lí', character: '梨' },
+                { pinyin: 'táo zi', character: '桃子' },
+                { pinyin: 'jú zi', character: '橘子' },
+                { pinyin: 'pú tao', character: '葡萄' }
+            ],
+            clothing: [
+                { pinyin: 'chèn shān', character: '衬衫' },
+                { pinyin: 'qún zi', character: '裙子' },
+                { pinyin: 'kù zi', character: '裤子' },
+                { pinyin: 'wà zi', character: '袜子' },
+                { pinyin: 'xié zi', character: '鞋子' },
+                { pinyin: 'máo yī', character: '毛衣' },
+                { pinyin: 'yǔ yī', character: '雨衣' },
+                { pinyin: 'pī fēng', character: '披风' }
+            ],
+            weather: [
+                { pinyin: 'qíng tiān', character: '晴天' },
+                { pinyin: 'yún tiān', character: '云天' },
+                { pinyin: 'yīn tiān', character: '阴天' },
+                { pinyin: 'xià yǔ', character: '下雨' },
+                { pinyin: 'xià xuě', character: '下雪' },
+                { pinyin: 'guā fēng', character: '刮风' },
+                { pinyin: 'xià bīng', character: '下冰' },
+                { pinyin: 'wù', character: '雾' }
+            ],
+            hobby: [
+                { pinyin: 'huà huà', character: '画画' },
+                { pinyin: 'chàng gē', character: '唱歌' },
+                { pinyin: 'tiào wǔ', character: '跳舞' },
+                { pinyin: 'dú shū', character: '读书' },
+                { pinyin: 'yóu yǒng', character: '游泳' },
+                { pinyin: 'pǎo bù', character: '跑步' },
+                { pinyin: 'tī zú qiú', character: '踢足球' },
+                { pinyin: 'dǎ lán qiú', character: '打篮球' }
+            ],
+            color: [
+                { pinyin: 'hóng sè', character: '红色' },
+                { pinyin: 'lán sè', character: '蓝色' },
+                { pinyin: 'huáng sè', character: '黄色' },
+                { pinyin: 'lǜ sè', character: '绿色' },
+                { pinyin: 'zǐ sè', character: '紫色' },
+                { pinyin: 'hēi sè', character: '黑色' },
+                { pinyin: 'bái sè', character: '白色' },
+                { pinyin: 'fěn sè', character: '粉色' }
+            ],
+            transport: [
+                { pinyin: 'qì chē', character: '汽车' },
+                { pinyin: 'gōng gòng qì chē', character: '公共汽车' },
+                { pinyin: 'zì xíng chē', character: '自行车' },
+                { pinyin: 'diàn tī', character: '电梯' },
+                { pinyin: 'fēi jī', character: '飞机' },
+                { pinyin: 'huǒ chē', character: '火车' },
+                { pinyin: 'lún chuán', character: '轮船' },
+                { pinyin: 'mó tuō chē', character: '摩托车' }
+            ],
+            study: [
+                { pinyin: 'qiān bǐ', character: '铅笔' },
+                { pinyin: 'gāng bǐ', character: '钢笔' },
+                { pinyin: 'xiàng pí', character: '橡皮' },
+                { pinyin: 'chǐ zi', character: '尺子' },
+                { pinyin: 'shū bāo', character: '书包' },
+                { pinyin: 'běn zi', character: '本子' },
+                { pinyin: 'zhǐ', character: '纸' },
+                { pinyin: 'mò shuǐ', character: '墨水' }
+            ],
+            numbers: [
+                { pinyin: 'yī', character: '一' },
+                { pinyin: 'èr', character: '二' },
+                { pinyin: 'sān', character: '三' },
+                { pinyin: 'sì', character: '四' },
+                { pinyin: 'wǔ', character: '五' },
+                { pinyin: 'liù', character: '六' },
+                { pinyin: 'qī', character: '七' },
+                { pinyin: 'bā', character: '八' }
+            ],
+            zodiac: [
+                { pinyin: 'shǔ', character: '鼠' },
+                { pinyin: 'niú', character: '牛' },
+                { pinyin: 'hǔ', character: '虎' },
+                { pinyin: 'tù', character: '兔' },
+                { pinyin: 'lóng', character: '龙' },
+                { pinyin: 'shé', character: '蛇' },
+                { pinyin: 'mǎ', character: '马' },
+                { pinyin: 'yáng', character: '羊' }
+            ],
+            animals: [
+                { pinyin: 'gǒu', character: '狗' },
+                { pinyin: 'māo', character: '猫' },
+                { pinyin: 'niǎo', character: '鸟' },
+                { pinyin: 'yú', character: '鱼' },
+                { pinyin: 'hóu', character: '猴' },
+                { pinyin: 'xióng', character: '熊' },
+                { pinyin: 'lǎo hǔ', character: '老虎' },
+                { pinyin: 'shī zi', character: '狮子' }
+            ],
+            food: [
+                { pinyin: 'jiǎo zi', character: '饺子' },
+                { pinyin: 'miàn tiáo', character: '面条' },
+                { pinyin: 'mǐ fàn', character: '米饭' },
+                { pinyin: 'bāo zi', character: '包子' },
+                { pinyin: 'huǒ guō', character: '火锅' },
+                { pinyin: 'chǎo fàn', character: '炒饭' },
+                { pinyin: 'kǎo yā', character: '烤鸭' },
+                { pinyin: 'xiǎo lóng bāo', character: '小笼包' }
+            ],
+            occupations: [
+                { pinyin: 'yī shēng', character: '医生' },
+                { pinyin: 'lǎo shī', character: '老师' },
+                { pinyin: 'gōng chéng shī', character: '工程师' },
+                { pinyin: 'chú shī', character: '厨师' },
+                { pinyin: 'jǐng chá', character: '警察' },
+                { pinyin: 'xiāo fáng yuán', character: '消防员' },
+                { pinyin: 'sī jī', character: '司机' },
+                { pinyin: 'nóng mín', character: '农民' }
+            ],
+            time: [
+                { pinyin: 'zǎo shang', character: '早上' },
+                { pinyin: 'zhōng wǔ', character: '中午' },
+                { pinyin: 'xià wǔ', character: '下午' },
+                { pinyin: 'wǎn shang', character: '晚上' },
+                { pinyin: 'zuó tiān', character: '昨天' },
+                { pinyin: 'jīn tiān', character: '今天' },
+                { pinyin: 'míng tiān', character: '明天' },
+                { pinyin: 'xiàn zài', character: '现在' }
+            ],
+            countries: [
+                { pinyin: 'zhōng guó', character: '中国' },
+                { pinyin: 'měi guó', character: '美国' },
+                { pinyin: 'rì běn', character: '日本' },
+                { pinyin: 'hán guó', character: '韩国' },
+                { pinyin: 'fǎ guó', character: '法国' },
+                { pinyin: 'dé guó', character: '德国' },
+                { pinyin: 'yì dà lì', character: '意大利' },
+                { pinyin: 'é luó sī', character: '俄罗斯' }
+            ],
+            languages: [
+                { pinyin: 'hàn yǔ', character: '汉语' },
+                { pinyin: 'yīng yǔ', character: '英语' },
+                { pinyin: 'rì yǔ', character: '日语' },
+                { pinyin: 'hán yǔ', character: '韩语' },
+                { pinyin: 'fǎ yǔ', character: '法语' },
+                { pinyin: 'dé yǔ', character: '德语' },
+                { pinyin: 'xī bān yá yǔ', character: '西班牙语' },
+                { pinyin: 'é yǔ', character: '俄语' }
+            ],
+            subjects: [
+                { pinyin: 'yǔ wén', character: '语文' },
+                { pinyin: 'shù xué', character: '数学' },
+                { pinyin: 'yīng yǔ', character: '英语' },
+                { pinyin: 'wù lǐ', character: '物理' },
+                { pinyin: 'huà xué', character: '化学' },
+                { pinyin: 'shēng wù', character: '生物' },
+                { pinyin: 'lì shǐ', character: '历史' },
+                { pinyin: 'dì lǐ', character: '地理' }
+            ],
+            sports: [
+                { pinyin: 'dǎ wǎng qiú', character: '打网球' },
+                { pinyin: 'dǎ lán qiú', character: '打篮球' },
+                { pinyin: 'dǎ pīng pāng qiú', character: '打乒乓球' },
+                { pinyin: 'dǎ pái qiú', character: '打排球' },
+                { pinyin: 'dǎ yǔ máo qiú', character: '打羽毛球' },
+                { pinyin: 'tī zú qiú', character: '踢足球' },
+                { pinyin: 'yóu yǒng', character: '游泳' }
+            ],
+            places: [
+                { pinyin: 'shū diàn', character: '书店' },
+                { pinyin: 'xué xiào', character: '学校' },
+                { pinyin: 'gōng sī', character: '公司' },
+                { pinyin: 'gōng yuán', character: '公园' },
+                { pinyin: 'tǐ yù guǎn', character: '体育馆' },
+                { pinyin: 'qiú chǎng', character: '球场' },
+                { pinyin: 'shāng diàn', character: '商店' },
+                { pinyin: 'fàn diàn', character: '饭店' }
+            ]
+        };
+        
+        // 游戏状态变量
+        let currentTheme = 'family';
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let gameStarted = false;
+        let startTime = 0;
+        let timerInterval = null;
+        
+        // 语音合成支持检测
+        const speechSupported = 'speechSynthesis' in window;
+        let voices = [];
+        let selectedVoice = null;
+        
+        // DOM 元素
+        const gameBoard = document.getElementById('game-board');
+        const voiceSelect = document.getElementById('voice-select');
+        const rateSlider = document.getElementById('rate');
+        const rateValue = document.getElementById('rate-value');
+        const pitchSlider = document.getElementById('pitch');
+        const pitchValue = document.getElementById('pitch-value');
+        const testVoiceBtn = document.getElementById('test-voice-btn');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const warningEl = document.getElementById('warning');
+        const completionMessage = document.getElementById('completion-message');
+        const timeUsedEl = document.getElementById('time-used');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const nextLevelBtn = document.getElementById('next-level-btn');
+        const matchedCountEl = document.getElementById('matched-count');
+        const totalPairsEl = document.getElementById('total-pairs');
+        const timerEl = document.getElementById('timer');
+        const levelIndicator = document.getElementById('level-indicator');
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        
+        // 初始化函数
+        function init() {
+            if (!speechSupported) {
+                warningEl.textContent = '您的浏览器不支持语音合成功能，将无法播放发音。';
+                return;
+            }
+            
+            // 加载可用语音
+            loadVoices();
+            
+            // 语音加载可能需要时间，设置一个回退
+            speechSynthesis.onvoiceschanged = loadVoices;
+            
+            // 设置事件监听器
+            rateSlider.addEventListener('input', () => {
+                rateValue.textContent = rateSlider.value;
+            });
+            
+            pitchSlider.addEventListener('input', () => {
+                pitchValue.textContent = pitchSlider.value;
+            });
+            
+            testVoiceBtn.addEventListener('click', () => {
+                speakText('测试语音');
+            });
+            
+            startGameBtn.addEventListener('click', startGame);
+            
+            playAgainBtn.addEventListener('click', () => {
+                completionMessage.style.display = 'none';
+                startGame();
+            });
+            
+            nextLevelBtn.addEventListener('click', () => {
+                completionMessage.style.display = 'none';
+                startGame();
+            });
+            
+            // 主题按钮事件
+            themeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    themeButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTheme = btn.dataset.theme;
+                    levelIndicator.textContent = `当前主题：${getThemeName(currentTheme)}`;
+                    if (gameStarted) {
+                        startGame();
+                    }
+                });
+            });
+            
+            // 初始更新总对数
+            updateTotalPairs();
+        }
+        
+        // 获取主题名称
+        function getThemeName(themeKey) {
+            const themeNames = {
+                'family': '家人',
+                'fruit': '水果',
+                'clothing': '衣服',
+                'weather': '天气',
+                'hobby': '爱好',
+                'color': '颜色',
+                'transport': '交通工具',
+                'study': '学习用品',
+                'numbers': '数字',
+                'zodiac': '十二生肖',
+                'animals': '动物',
+                'food': '中华美食',
+                'occupations': '职业',
+                'time': '时间',
+                'countries': '国家',
+                'languages': '语言',
+                'subjects': '科目',
+                'sports': '运动',
+                'places': '地点'
+            };
+            return themeNames[themeKey] || themeKey;
+        }
+        
+        // 更新总对数显示
+        function updateTotalPairs() {
+            totalPairsEl.textContent = themes[currentTheme].length;
+        }
+        
+        // 加载可用语音
+        function loadVoices() {
+            voices = speechSynthesis.getVoices();
+            voiceSelect.innerHTML = '';
+            
+            // 查找中文语音
+            const chineseVoices = voices.filter(voice => 
+                voice.lang.includes('zh') || voice.lang.includes('cmn') || voice.lang.includes('zh-CN')
+            );
+            
+            if (chineseVoices.length === 0) {
+                warningEl.textContent = '未找到中文语音，可安装中文语音包或使用预录音文件以保证发音一致。';
+            } else {
+                warningEl.textContent = '';
+            }
+            
+            // 添加所有中文语音到下拉菜单
+            chineseVoices.forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+            
+            // 如果有中文语音，默认选择第一个
+            if (chineseVoices.length > 0) {
+                selectedVoice = chineseVoices[0];
+            }
+            
+            // 添加其他语音选项
+            voices.forEach(voice => {
+                if (!voice.lang.includes('zh') && !voice.lang.includes('cmn')) {
+                    const option = document.createElement('option');
+                    option.value = voice.name;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    voiceSelect.appendChild(option);
+                }
+            });
+            
+            voiceSelect.addEventListener('change', () => {
+                selectedVoice = voices.find(voice => voice.name === voiceSelect.value);
+            });
+        }
+        
+        // 语音合成函数
+        function speakText(text) {
+            if (!speechSupported) return;
+            
+            // 停止任何正在进行的语音
+            speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+            
+            utterance.rate = parseFloat(rateSlider.value);
+            utterance.pitch = parseFloat(pitchSlider.value);
+            utterance.lang = 'zh-CN';
+            
+            speechSynthesis.speak(utterance);
+        }
+        
+        // 开始游戏
+        function startGame() {
+            gameStarted = true;
+            matchedPairs = 0;
+            flippedCards = [];
+            gameBoard.innerHTML = '';
+            updateTotalPairs();
+            matchedCountEl.textContent = '0';
+            
+            // 重置计时器
+            if (timerInterval) clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+            timerEl.textContent = '0';
+            
+            // 创建卡片数组（拼音和汉字）
+            cards = [];
+            themes[currentTheme].forEach(pair => {
+                cards.push({ type: 'pinyin', content: pair.pinyin, pair: pair.character });
+                cards.push({ type: 'character', content: pair.character, pair: pair.pinyin });
+            });
+            
+            // 洗牌算法
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            
+            // 创建卡片元素
+            cards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.dataset.index = index;
+                
+                // 添加卡片内容
+                const cardContent = document.createElement('div');
+                cardContent.className = 'card-content';
+                cardContent.textContent = '?';
+                cardElement.appendChild(cardContent);
+                
+                cardElement.addEventListener('click', () => {
+                    if (!gameStarted) return;
+                    
+                    const cardIndex = parseInt(cardElement.dataset.index);
+                    const cardData = cards[cardIndex];
+                    
+                    // 如果卡片已经匹配或已经翻开，则忽略点击
+                    if (cardElement.classList.contains('matched') || 
+                        cardElement.classList.contains('flipped') ||
+                        flippedCards.length >= 2) {
+                        return;
+                    }
+                    
+                    // 播放发音
+                    if (cardData.type === 'character') {
+                        speakText(cardData.content);
+                    } else {
+                        // 对于拼音卡片，找到对应的汉字进行播放
+                        const pair = themes[currentTheme].find(p => p.pinyin === cardData.content);
+                        if (pair) speakText(pair.character);
+                    }
+                    
+                    // 翻开卡片
+                    cardContent.textContent = cardData.content;
+                    cardElement.classList.add('flipped');
+                    flippedCards.push({ element: cardElement, data: cardData });
+                    
+                    // 如果翻开了两张卡片，检查是否匹配
+                    if (flippedCards.length === 2) {
+                        checkMatch();
+                    }
+                });
+                
+                gameBoard.appendChild(cardElement);
+            });
+        }
+        
+        // 检查卡片是否匹配
+        function checkMatch() {
+            const card1 = flippedCards[0];
+            const card2 = flippedCards[1];
+            
+            // 检查是否匹配（一张拼音卡和一张汉字卡，且内容对应）
+            if (card1.data.type !== card2.data.type && 
+                ((card1.data.type === 'pinyin' && card1.data.pair === card2.data.content) ||
+                 (card2.data.type === 'pinyin' && card2.data.pair === card1.data.content))) {
+                // 匹配成功
+                card1.element.classList.add('matched');
+                card2.element.classList.add('matched');
+                
+                // 播放匹配成功的发音（使用汉字）
+                if (card1.data.type === 'character') {
+                    speakText(card1.data.content);
+                } else {
+                    speakText(card2.data.content);
+                }
+                
+                matchedPairs++;
+                matchedCountEl.textContent = matchedPairs;
+                
+                // 检查游戏是否完成
+                if (matchedPairs === themes[currentTheme].length) {
+                    gameComplete();
+                }
+            } else {
+                // 不匹配，翻回
+                setTimeout(() => {
+                    const card1Content = card1.element.querySelector('.card-content');
+                    const card2Content = card2.element.querySelector('.card-content');
+                    card1Content.textContent = '?';
+                    card2Content.textContent = '?';
+                    card1.element.classList.remove('flipped');
+                    card2.element.classList.remove('flipped');
+                }, 1000);
+            }
+            
+            // 清空已翻开卡片数组
+            setTimeout(() => {
+                flippedCards = [];
+            }, 1000);
+        }
+        
+        // 更新计时器
+        function updateTimer() {
+            if (gameStarted && matchedPairs < themes[currentTheme].length) {
+                const currentTime = Math.floor((Date.now() - startTime) / 1000);
+                timerEl.textContent = currentTime;
+            }
+        }
+        
+        // 游戏完成
+        function gameComplete() {
+            clearInterval(timerInterval);
+            const timeUsed = Math.floor((Date.now() - startTime) / 1000);
+            timeUsedEl.textContent = timeUsed;
+            completionMessage.style.display = 'block';
+            gameStarted = false;
+        }
+        
+        // 分享游戏
+        function shareGame() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '拼音对对碰游戏',
+                    text: '一款有趣的中文学习游戏，通过匹配拼音和汉字来学习中文词汇！',
+                    url: window.location.href
+                })
+                .catch(error => {
+                    alert('分享失败: ' + error);
+                });
+            } else {
+                alert('您的浏览器不支持Web Share API。您可以复制链接分享：' + window.location.href);
+            }
+        }
+        
+        // 保存游戏
+        function saveGame() {
+            const sourceCode = document.documentElement.outerHTML;
+            const blob = new Blob([sourceCode], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pinyin_game.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // 初始化游戏
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
